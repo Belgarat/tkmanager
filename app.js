@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var users = require('./routes/users');
+var auth = require('./routes/auth');
 
 var app = express();
 
@@ -14,6 +15,7 @@ app.use(cookieParser())
 app.use(morgan('dev'));
 
 app.use('/api/v1/users', users);
+app.use('/api/v1/auth', auth);
 
 module.exports = app;
 
