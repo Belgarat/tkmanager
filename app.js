@@ -15,6 +15,8 @@ app.use(cookieParser())
 app.use(morgan('dev'));
 
 app.use('/api/v1/users', users);
+
+//authentication controller
 app.use('/api/v1/auth', auth);
 
 module.exports = app;
