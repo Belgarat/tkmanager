@@ -6,6 +6,10 @@ var bodyParser = require('body-parser');
 
 var users = require('./routes/users');
 
+//moduli e variabili aggiuntive di test per connessione DB
+var me = require('./routes/me');
+////////////////////////////////////////////
+
 var app = express();
 
 app.use(bodyParser.json());
@@ -14,6 +18,9 @@ app.use(cookieParser())
 app.use(morgan('dev'));
 
 app.use('/api/v1/users', users);
+////////////////////////////////
+app.use('/api/v1/me', me);
+///////////////////////////////
 
 module.exports = app;
 
