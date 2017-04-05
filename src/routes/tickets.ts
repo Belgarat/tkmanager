@@ -22,9 +22,19 @@ export class TicketsRoute extends BaseRoute {
       new Tickets().getAll(req, res, next);
     });
 
-    // get by ids
-    router.get("/api/v1/tickets/:ids", (req: Request, res: Response, next: NextFunction) => {
-      new Tickets().getByIds(req.params.ids, res, next);
+    // get by id
+    router.get("/api/v1/tickets/:ticket_id", (req: Request, res: Response, next: NextFunction) => {
+      new Tickets().getById(req.params.ticket_id, res, next);
+    });
+
+    // get jobs
+    router.get("/api/v1/tickets/:ticket_id/jobs", (req: Request, res: Response, next: NextFunction) => {
+      new Tickets().getJobs(req.params.ticket_id, res, next);
+    });
+
+    // get customer
+    router.get("/api/v1/tickets/:ticket_id/customer", (req: Request, res: Response, next: NextFunction) => {
+      new Tickets().getCustomer(req.params.ticket_id, res, next);
     });
 
     // ... put here other api routes ...

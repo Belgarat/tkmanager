@@ -7,8 +7,14 @@ class TicketsRoute extends route_1.BaseRoute {
         router.get("/api/v1/tickets", (req, res, next) => {
             new tickets_1.Tickets().getAll(req, res, next);
         });
-        router.get("/api/v1/tickets/:ids", (req, res, next) => {
-            new tickets_1.Tickets().getByIds(req.params.ids, res, next);
+        router.get("/api/v1/tickets/:ticket_id", (req, res, next) => {
+            new tickets_1.Tickets().getById(req.params.ticket_id, res, next);
+        });
+        router.get("/api/v1/tickets/:ticket_id/jobs", (req, res, next) => {
+            new tickets_1.Tickets().getJobs(req.params.ticket_id, res, next);
+        });
+        router.get("/api/v1/tickets/:ticket_id/customer", (req, res, next) => {
+            new tickets_1.Tickets().getCustomer(req.params.ticket_id, res, next);
         });
         console.log("[TicketsRoute::create] finished adding tickets api routes.");
     }
