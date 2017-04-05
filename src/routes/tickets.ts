@@ -37,6 +37,11 @@ export class TicketsRoute extends BaseRoute {
       new Tickets().getCustomer(req.params.ticket_id, res, next);
     });
 
+    // search fulltext
+    router.get("/api/v1/tickets/search/:fulltext", (req: Request, res: Response, next: NextFunction) => {
+      new Tickets().searchFullText(req.params.fulltext, res, next);
+    });
+
     // ... put here other api routes ...
 
     //log

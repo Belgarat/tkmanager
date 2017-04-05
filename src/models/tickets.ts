@@ -62,6 +62,18 @@ export class Tickets {
         });
     }
 
+    public searchFullText(req, res, next) {
+        //console.log(req);
+        //get connection and execute query
+        db.get().query('select a.*,b.priority,c.status from tickets as a left join ticket_priority_meta as b on (a.priority_id = b.id) left join ticket_status_meta as c on (a.status_id = c.id) where a.description like "%?%" ', req, function(err, rows) {
+            if (err) {
+                console.log(err);
+                throw err;
+            }
+            return res.json(rows);
+        });
+    }
+
     //create new ticket and return last insert id
     public insert(creatorId, customerId, statusId, priorityId, description) {
         //current timestamp from UTC to standard datetime

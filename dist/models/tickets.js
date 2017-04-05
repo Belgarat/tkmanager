@@ -41,6 +41,15 @@ class Tickets {
             return res.json(rows);
         });
     }
+    searchFullText(req, res, next) {
+        db.get().query('select a.*,b.priority,c.status from tickets as a left join ticket_priority_meta as b on (a.priority_id = b.id) left join ticket_status_meta as c on (a.status_id = c.id) where a.description like "%?%" ', req, function (err, rows) {
+            if (err) {
+                console.log(err);
+                throw err;
+            }
+            return res.json(rows);
+        });
+    }
     insert(creatorId, customerId, statusId, priorityId, description) {
         var now = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
         var values = [creatorId, customerId, statusId, priorityId, description, now, now];
