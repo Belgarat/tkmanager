@@ -2,51 +2,48 @@
 import mysql = require('mysql');
 import async = require('async');
 
-var PRODUCTION_DB = 'tkmanager'
-  //, TEST_DB = 'tkmanager'
+/**
+ * / model
+ *
+ * @class DB
+ */
+export class db {
 
-var PRODUCTION_HOST = 'localhost'
-  //, TEST_HOST = '10.121.255.2'
+  PRODUCTION_DB:string = 'tkmanager';
 
-var PRODUCTION_USER = 'tkmanager'
-  //, TEST_USER = 'tkmanager'
+  PRODUCTION_HOST:string = 'localhost';
 
-var PRODUCTION_PASSWORD = 'tkmanager'
-  //, TEST_PASSWORD = 'tkmanager'
+  PRODUCTION_USER:string = 'tkmanager'
 
-//exports.MODE_TEST = 'mode_test'
-//exports.MODE_PRODUCTION = 'mode_production'
-var MODE_PRODUCTION = 'mode_production'
+  PRODUCTION_PASSWORD:string = 'tkmanager'
 
-var state = {
-  pool: null,
-  mode: null,
+  MODE_PRODUCTION:string = 'mode_production'
+
+  state:any = {
+    pool: null,
+    mode: null,
+  }
+
+  constructor(){
+    this.connect();
+  }
+
+  //connection to DB if mode === 'mode test' || === 'mode_production'
+  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   mode_test IS FOR AUTOMATED TESTING ONLY   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  //export function connect(mode: string) {
+  public connect() {
+      this.state.pool = mysql.createPool({
+        host: this.PRODUCTION_HOST,
+        user: this.PRODUCTION_USER,
+        password: this.PRODUCTION_PASSWORD,
+        database: this.PRODUCTION_DB
+    });
+  }
+
+  public get() {
+    return this.state.pool
+  }
 }
-
-//connection to DB if mode === 'mode test' || === 'mode_production'
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   mode_test IS FOR AUTOMATED TESTING ONLY   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//export function connect(mode: string) {
-export function connect() {
-  state.pool = mysql.createPool({
-    host: PRODUCTION_HOST,
-    user: PRODUCTION_USER,
-    password: PRODUCTION_PASSWORD,
-    database: PRODUCTION_DB
-
-    //host: mode === exports.MODE_PRODUCTION ? PRODUCTION_HOST : TEST_HOST,
-    //user: mode === exports.MODE_PRODUCTION ? PRODUCTION_USER : TEST_USER,
-    //password: mode === exports.MODE_PRODUCTION ? PRODUCTION_PASSWORD : TEST_PASSWORD,
-    //database: mode === exports.MODE_PRODUCTION ? PRODUCTION_DB : TEST_DB
-  })
-
-  //state.mode = mode
-  //done()
-}
-
-export function get() {
-  return state.pool
-}
-
 /*exports.fixtures = function(data) {
   var pool = state.pool
   if (!pool) return done(new Error('Missing database connection.'))
