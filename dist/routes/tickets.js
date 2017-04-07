@@ -10,6 +10,12 @@ class TicketsRoute extends route_1.BaseRoute {
         router.get("/api/v1/tickets/:ticket_id", (req, res, next) => {
             new tickets_1.Tickets().getById(req.params.ticket_id, res, next);
         });
+        router.get("/api/v1/tickets/:ticket_id/trace", (req, res, next) => {
+            new tickets_1.Tickets().getCurrentTrace(req.params.ticket_id, res, next);
+        });
+        router.get("/api/v1/tickets/:ticket_id/traces", (req, res, next) => {
+            new tickets_1.Tickets().getCompleteTrace(req.params.ticket_id, res, next);
+        });
         router.get("/api/v1/tickets/:ticket_id/jobs", (req, res, next) => {
             new tickets_1.Tickets().getJobs(req.params.ticket_id, res, next);
         });
@@ -18,6 +24,13 @@ class TicketsRoute extends route_1.BaseRoute {
         });
         router.get("/api/v1/tickets/search/:fulltext", (req, res, next) => {
             new tickets_1.Tickets().searchFullText(req.params.fulltext, res, next);
+        });
+        router.post("/api/v1/tickets", (req, res, next) => {
+            new tickets_1.Tickets().add(req, res, next);
+        });
+        router.put("/api/v1/tickets/:ticket_id", (req, res, next) => {
+        });
+        router.delete("/api/v1/tickets", (req, res, next) => {
         });
         console.log("[TicketsRoute::create] finished adding tickets api routes.");
     }

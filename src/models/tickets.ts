@@ -1,5 +1,6 @@
 import { db } from "../db";
 import { logger } from "../logger";
+import { Trace } from "./trace";
 
 /**
  * / model
@@ -9,11 +10,12 @@ import { logger } from "../logger";
 export class Tickets {
     
     oDb;
+    oTrace;
 
     constructor(){
         //create connection to DB
         this.oDb = new db();
-        //winston.default.transports.console.level='debug';
+        this.oTrace = new Trace();
     }
 
     /**
@@ -41,7 +43,6 @@ export class Tickets {
    * get ticket by id
    */
     public getById(req, res, next) {
-        //console.log(req);
         //get connection and execute query
         this.oDb.get().query('select a.*,b.priority,c.status from  tickets as a left join ticket_priority_meta as b on (a.priority_id = b.id) left join ticket_status_meta as c on (a.status_id = c.id) where a.id in (?)', req, function(err, rows) {
             if (err) {
@@ -50,6 +51,26 @@ export class Tickets {
             }
             return res.json(rows);
         });
+    }
+
+    /**
+   * getCurrentTrace
+   *
+   * @class Tickets
+   * get current ticket trace from ticket id
+   */
+    public getCurrentTrace(req, res, next) {
+        return this.oTrace.getCurrent(req,res);
+    }
+
+     /**
+   * getCurrentTrace
+   *
+   * @class Tickets
+   * get current ticket trace from ticket id
+   */
+    public getCompleteTrace(req, res, next) {
+        return this.oTrace.getAll(req,res);
     }
 
     /**
@@ -107,26 +128,29 @@ export class Tickets {
     }
 
      /**
-     * insert
+     * add
      *
      * @class Tickets
      * insert new ticket and return last insert id
      */
-    public insert(creatorId, customerId, statusId, priorityId, description) {
+    public add(req, res, next) {
+        //test add trace
+        this.oTrace.add(1,1,2,0);
         //current timestamp from UTC to standard datetime
-        let now1 = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-        let now2 = now1;
-        let values = {creatorId, customerId, statusId, priorityId, description, now1, now2};
+        let created_at = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+        let updated_at = created_at;
+        //let values = {creatorId, customerId, statusId, priorityId, description, created_at, updated_at};
         //get connection and execute query
-        let strQuery='insert into tickets (creator_id, customer_id, status_id, priority_id, description, created_at, updated_at) values (?,?,?,?,?,?,?) ';
+        /*let strQuery='insert into tickets (creator_id, customer_id, status_id, priority_id, description, created_at, updated_at) values (?,?,?,?,?,?,?) ';
         this.oDb.get().query(strQuery, values, function(err, result) {
             if (err) {
                 console.log(err);
                 throw err;
             }
-            logger.info('ticket '+result.insertID+' created by '+creatorId);
+            logger.info('ticket '+result.insertID+' created by '+creatorId+' - '+strQuery+' --> params '+JSON.stringify(values));
             return result.insertID;
-        });
+        });*/
+        return true;
     }
 
     /**
