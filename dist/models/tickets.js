@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = require("../db");
+const logger_1 = require("../logger");
 const trace_1 = require("./trace");
 class Tickets {
     constructor() {
@@ -60,8 +61,25 @@ class Tickets {
     }
     add(req, res, next) {
         this.oTrace.add(1, 1, 2, 0);
+        let creatorId = 100;
+        let customerId = 99;
+        let statusId = 0;
+        let priorityId = 0;
+        let description = "test";
         let created_at = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
         let updated_at = created_at;
+        console.log(created_at);
+        let values = [creatorId, customerId, statusId, priorityId, description, created_at, updated_at];
+        console.log(values);
+        let strQuery = 'insert into tickets(creator_id, customer_id, status_id, priority_id, description, created_at, updated_at) values(?,?,?,?,?,?,?)';
+        this.oDb.get().query(strQuery, values, function (err, result) {
+            if (err) {
+                console.log(err);
+                throw err;
+            }
+            logger_1.logger.info('ticket ' + result.insertID + ' created by ' + creatorId + ' - ' + strQuery + ' --> params ' + JSON.stringify(values));
+            return result.insertID;
+        });
         return true;
     }
     update(statusId, priorityId, description) {
