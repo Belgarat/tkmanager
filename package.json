@@ -16,7 +16,8 @@
     "express-routes": "0.0.2",
     "jsonwebtoken": "^7.3.0",
     "method-override": "^2.3.8",
-    "morgan": "^1.8.1"
+    "morgan": "^1.8.1",
+    "winston-mysql": "^0.9.0"
   },
   "devDependencies": {
     "@types/winston": "^2.3.0",
