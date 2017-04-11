@@ -60,7 +60,6 @@ class Tickets {
         });
     }
     add(req, res, next) {
-        this.oTrace.add(1, 1, 2, 0);
         let creatorId = 100;
         let customerId = 99;
         let statusId = 0;
@@ -70,13 +69,13 @@ class Tickets {
         let updated_at = created_at;
         console.log(created_at);
         let values = [creatorId, customerId, statusId, priorityId, description, created_at, updated_at];
-        console.log(values);
         let strQuery = 'insert into tickets(creator_id, customer_id, status_id, priority_id, description, created_at, updated_at) values(?,?,?,?,?,?,?)';
         this.oDb.get().query(strQuery, values, function (err, result) {
             if (err) {
                 console.log(err);
                 throw err;
             }
+            this.oTrace.add(1, 1, 2, 0);
             logger_1.logger.info('ticket ' + result.insertID + ' created by ' + creatorId + ' - ' + strQuery + ' --> params ' + JSON.stringify(values));
             return result.insertID;
         });

@@ -134,8 +134,7 @@ export class Tickets {
      * insert new ticket and return last insert id
      */
     public add(req, res, next) {
-        //test add trace
-        this.oTrace.add(1,1,2,0);
+        
         //current timestamp from UTC to standard datetime
         let creatorId = 100;
         let customerId = 99;
@@ -146,7 +145,7 @@ export class Tickets {
         let updated_at = created_at;
         console.log(created_at);
         let values = [creatorId, customerId, statusId, priorityId, description, created_at, updated_at];
-        console.log(values);
+        //console.log(values);
         //get connection and execute query
         let strQuery='insert into tickets(creator_id, customer_id, status_id, priority_id, description, created_at, updated_at) values(?,?,?,?,?,?,?)';
         this.oDb.get().query(strQuery, values, function(err, result) {
@@ -154,6 +153,8 @@ export class Tickets {
                 console.log(err);
                 throw err;
             }
+            //test add trace
+            this.oTrace.add(1,1,2,0);
             logger.info('ticket '+result.insertID+' created by '+creatorId+' - '+strQuery+' --> params '+JSON.stringify(values));
             return result.insertID;
         });

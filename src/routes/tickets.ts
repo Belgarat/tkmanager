@@ -71,6 +71,7 @@ export class TicketsRoute extends BaseRoute {
 
     //log
     console.log("[TicketsRoute::create] finished adding tickets api routes.");
+    console.log("Base route: GET :8080/api/v1/tickets");
   }
 
   /**

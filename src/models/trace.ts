@@ -65,10 +65,12 @@ export class Trace {
    */
     public add(ticket_id,creator_id,user_id,group_id){
         var created_at:string = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-        console.log(created_at);
-        let values = {id: null, created_at, ticket_id, creator_id, user_id, group_id}
+        //console.log(created_at);
+        let id = null;
+        let values = [id, created_at, ticket_id, creator_id, user_id, group_id]
+        //console.log(values);
         //let q="insert into trace (created_at,ticket_id,creator_id,user_id,group_id) values (?)";
-        let q="insert into trace values (?)";
+        let q="insert into trace values (?,?,?,?,?,?)";
         this.oDb.get().query(q, values, function(err, result) {
             if (err) {
                 console.log(err);

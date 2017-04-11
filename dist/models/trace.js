@@ -31,9 +31,9 @@ class Trace {
     }
     add(ticket_id, creator_id, user_id, group_id) {
         var created_at = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-        console.log(created_at);
-        let values = { id: null, created_at, ticket_id, creator_id, user_id, group_id };
-        let q = "insert into trace values (?)";
+        let id = null;
+        let values = [id, created_at, ticket_id, creator_id, user_id, group_id];
+        let q = "insert into trace values (?,?,?,?,?,?)";
         this.oDb.get().query(q, values, function (err, result) {
             if (err) {
                 console.log(err);
