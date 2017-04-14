@@ -6,7 +6,6 @@ const trace_1 = require("./trace");
 class Tickets {
     constructor() {
         this.oDb = new db_1.db();
-        this.oTrace = new trace_1.Trace();
     }
     getAll(req, res, next) {
         this.oDb.get().query('select a.*,b.priority,c.status from tickets as a left join ticket_priority_meta as b on (a.priority_id = b.id) left join ticket_status_meta as c on (a.status_id = c.id) where 1', function (err, rows) {
@@ -27,10 +26,17 @@ class Tickets {
         });
     }
     getCurrentTrace(req, res, next) {
-        return this.oTrace.getCurrent(req, res);
+        let oTrace = new trace_1.Trace();
+        return oTrace.getCurrent(req, res);
     }
     getCompleteTrace(req, res, next) {
-        return this.oTrace.getAll(req, res);
+        let oTrace = new trace_1.Trace();
+        return oTrace.getAll(req, res);
+    }
+    addTrace(req, res, next) {
+        let oTrace = new trace_1.Trace();
+        let result = oTrace.add(req.ticket_id, req.body.creator_id, req.body.user_id, req.body.group_id);
+        return result;
     }
     getJobs(req, res, next) {
         this.oDb.get().query('select a.*,b.name,surname,email from jobs as a left join workers as b on (a.worker_id = b.id) where a.ticket_id = ?', req, function (err, rows) {
@@ -60,33 +66,56 @@ class Tickets {
         });
     }
     add(req, res, next) {
-        let creatorId = 100;
-        let customerId = 99;
-        let statusId = 0;
-        let priorityId = 0;
-        let description = "test";
-        let created_at = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-        let updated_at = created_at;
-        console.log(created_at);
-        let values = [creatorId, customerId, statusId, priorityId, description, created_at, updated_at];
+        let createdAt = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+        let updatedAt = createdAt;
+        let values = [req.body.creatorId, req.body.customerId, req.body.statusId, req.body.priorityId, req.body.description, createdAt, updatedAt];
         let strQuery = 'insert into tickets(creator_id, customer_id, status_id, priority_id, description, created_at, updated_at) values(?,?,?,?,?,?,?)';
         this.oDb.get().query(strQuery, values, function (err, result) {
             if (err) {
                 console.log(err);
                 throw err;
             }
-            this.oTrace.add(1, 1, 2, 0);
-            logger_1.logger.info('ticket ' + result.insertID + ' created by ' + creatorId + ' - ' + strQuery + ' --> params ' + JSON.stringify(values));
-            return result.insertID;
+            logger_1.logger.info('ticket ' + result.insertId + ' created by ' + req.params.creatorId + ' - ' + strQuery + ' --> params ' + JSON.stringify(values));
+            return result.insertId;
         });
-        return true;
     }
-    update(statusId, priorityId, description) {
-        var now = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-        return true;
+    save(req, res, next) {
+        let updatedAt = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+        let values = [req.body.statusId, req.body.priorityId, req.body.description, updatedAt];
+        let strQuery = 'update tickets set status_id = ?, priority_id = ?, description = ?, updated_at = ? where id = ' + req.ticket_id;
+        this.oDb.get().query(strQuery, values, function (err, result) {
+            if (err) {
+                console.log(err);
+                throw err;
+            }
+            logger_1.logger.info('ticket ' + req.ticket_id + ' updated by - ' + strQuery + ' --> params ' + JSON.stringify(values));
+            return true;
+        });
     }
-    delete(ticketId) {
-        return true;
+    delete(req, res, next) {
+        let deletedAt = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+        let values = [deletedAt];
+        let strQuery = 'update tickets deleted_at = ? where id = ' + req.ticket_id;
+        this.oDb.get().query(strQuery, values, function (err, result) {
+            if (err) {
+                console.log(err);
+                throw err;
+            }
+            logger_1.logger.info('ticket ' + req.ticket_id + ' deleted by - ' + strQuery + ' --> params ' + JSON.stringify(values));
+            return true;
+        });
+    }
+    undelete(req, res, next) {
+        let values = [null];
+        let strQuery = 'update tickets deleted_at = ? where id = ' + req.ticket_id;
+        this.oDb.get().query(strQuery, values, function (err, result) {
+            if (err) {
+                console.log(err);
+                throw err;
+            }
+            logger_1.logger.info('ticket ' + req.ticket_id + ' undeleted by - ' + strQuery + ' --> params ' + JSON.stringify(values));
+            return true;
+        });
     }
 }
 exports.Tickets = Tickets;

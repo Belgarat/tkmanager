@@ -32,6 +32,11 @@ export class TicketsRoute extends BaseRoute {
       new Tickets().getCurrentTrace(req.params.ticket_id, res, next);
     });
 
+    // add new trace
+    router.post("/api/v1/tickets/:ticket_id/trace", (req: Request, res: Response, next: NextFunction) => {
+      new Tickets().addTrace(req, res, next);
+    });
+
     // get all traces history by id
     router.get("/api/v1/tickets/:ticket_id/traces", (req: Request, res: Response, next: NextFunction) => {
       new Tickets().getCompleteTrace(req.params.ticket_id, res, next);
@@ -59,12 +64,17 @@ export class TicketsRoute extends BaseRoute {
 
     // update ticket
     router.put("/api/v1/tickets/:ticket_id", (req: Request, res: Response, next: NextFunction) => {
-      //new Tickets().save(req, res, next);
+      new Tickets().save(req, res, next);
     });
 
     // delete ticket
-    router.delete("/api/v1/tickets", (req: Request, res: Response, next: NextFunction) => {
-      //new Tickets().delete(req, res, next);
+    router.delete("/api/v1/tickets/:ticket_id", (req: Request, res: Response, next: NextFunction) => {
+      new Tickets().delete(req, res, next);
+    });
+
+    // undelete ticket
+    router.put("/api/v1/tickets/:ticket_id/undelete", (req: Request, res: Response, next: NextFunction) => {
+      new Tickets().undelete(req, res, next);
     });
 
     // ... put here other api routes ...

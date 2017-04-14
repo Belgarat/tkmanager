@@ -10,12 +10,12 @@ import { Trace } from "./trace";
 export class Tickets {
     
     oDb;
-    oTrace;
+    //oTrace;
 
     constructor(){
         //create connection to DB
         this.oDb = new db();
-        this.oTrace = new Trace();
+        //this.oTrace = new Trace();
     }
 
     /**
@@ -60,7 +60,8 @@ export class Tickets {
    * get current ticket trace from ticket id
    */
     public getCurrentTrace(req, res, next) {
-        return this.oTrace.getCurrent(req,res);
+        let oTrace = new Trace();
+        return oTrace.getCurrent(req,res);
     }
 
      /**
@@ -70,7 +71,20 @@ export class Tickets {
    * get current ticket trace from ticket id
    */
     public getCompleteTrace(req, res, next) {
-        return this.oTrace.getAll(req,res);
+        let oTrace = new Trace();
+        return oTrace.getAll(req,res);
+    }
+
+      /**
+   * addTrace
+   *
+   * @class Tickets
+   * add new ticket trace from ticket id
+   */
+    public addTrace(req, res, next) {
+        let oTrace = new Trace();
+        let result = oTrace.add(req.ticket_id, req.body.creator_id, req.body.user_id, req.body.group_id);
+        return result;
     }
 
     /**
@@ -134,31 +148,18 @@ export class Tickets {
      * insert new ticket and return last insert id
      */
     public add(req, res, next) {
-        
-        //current timestamp from UTC to standard datetime
-        let creatorId = 100;
-        let customerId = 99;
-        let statusId = 0;
-        let priorityId = 0;
-        let description = "test";
-        let created_at = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-        let updated_at = created_at;
-        console.log(created_at);
-        let values = [creatorId, customerId, statusId, priorityId, description, created_at, updated_at];
-        //console.log(values);
-        //get connection and execute query
+        let createdAt = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+        let updatedAt = createdAt;
+        let values = [req.body.creatorId, req.body.customerId, req.body.statusId, req.body.priorityId, req.body.description, createdAt, updatedAt];
         let strQuery='insert into tickets(creator_id, customer_id, status_id, priority_id, description, created_at, updated_at) values(?,?,?,?,?,?,?)';
         this.oDb.get().query(strQuery, values, function(err, result) {
             if (err) {
                 console.log(err);
                 throw err;
             }
-            //test add trace
-            this.oTrace.add(1,1,2,0);
-            logger.info('ticket '+result.insertID+' created by '+creatorId+' - '+strQuery+' --> params '+JSON.stringify(values));
-            return result.insertID;
+            logger.info('ticket '+result.insertId+' created by '+req.params.creatorId+' - '+strQuery+' --> params '+JSON.stringify(values));
+            return result.insertId;
         });
-        return true;
     }
 
     /**
@@ -167,11 +168,19 @@ export class Tickets {
      * @class Tickets
      * update a ticket and return true/false
      */
-    public update(statusId, priorityId, description) {
+    public save(req, res, next) {
         //current timestamp from UTC to standard datetime
-        var now = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-        //logger.info('ticket '+result.insertID+' updated by '+creatorId);
-        return true;
+        let updatedAt = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+        let values = [req.body.statusId, req.body.priorityId, req.body.description, updatedAt];
+        let strQuery='update tickets set status_id = ?, priority_id = ?, description = ?, updated_at = ? where id = '+req.ticket_id;
+        this.oDb.get().query(strQuery, values, function(err, result) {
+            if (err) {
+                console.log(err);
+                throw err;
+            }
+            logger.info('ticket '+req.ticket_id+' updated by - '+strQuery+' --> params '+JSON.stringify(values));
+            return true;
+        });
     }
 
     /**
@@ -180,8 +189,39 @@ export class Tickets {
      * @class Tickets
      * delete a ticket and return true/false
      */
-    public delete(ticketId) {
-        //logger.info('ticket '+result.insertID+' deleted by '+creatorId);
-        return true;
+    public delete(req, res, next) {
+        //current timestamp from UTC to standard datetime
+        let deletedAt = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+        let values = [deletedAt];
+        let strQuery='update tickets deleted_at = ? where id = '+req.ticket_id;
+        this.oDb.get().query(strQuery, values, function(err, result) {
+            if (err) {
+                console.log(err);
+                throw err;
+            }
+            logger.info('ticket '+req.ticket_id+' deleted by - '+strQuery+' --> params '+JSON.stringify(values));
+            return true;
+        });
+    }
+
+    /**
+     * undelete
+     *
+     * @class Tickets
+     * undelete a ticket and return true/false
+     */
+    public undelete(req, res, next) {
+        //current timestamp from UTC to standard datetime
+        //let updatedAt = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+        let values = [null];
+        let strQuery='update tickets deleted_at = ? where id = '+req.ticket_id;
+        this.oDb.get().query(strQuery, values, function(err, result) {
+            if (err) {
+                console.log(err);
+                throw err;
+            }
+            logger.info('ticket '+req.ticket_id+' undeleted by - '+strQuery+' --> params '+JSON.stringify(values));
+            return true;
+        });
     }
 }

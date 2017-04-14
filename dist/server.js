@@ -7,7 +7,6 @@ const logger = require("morgan");
 const path = require("path");
 const errorHandler = require("errorhandler");
 const methodOverride = require("method-override");
-const index_1 = require("./routes/index");
 const tickets_1 = require("./routes/tickets");
 class Server {
     static bootstrap() {
@@ -39,7 +38,6 @@ class Server {
     routes() {
         let router;
         router = express.Router();
-        index_1.IndexRoute.create(router);
         tickets_1.TicketsRoute.create(router);
         this.app.use(router);
     }

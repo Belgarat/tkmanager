@@ -5,7 +5,7 @@ import * as logger from "morgan";
 import * as path from "path";
 import errorHandler = require("errorhandler");
 import methodOverride = require("method-override");
-import { IndexRoute } from "./routes/index";
+//import { IndexRoute } from "./routes/index";
 import { TicketsRoute } from "./routes/tickets";
 /**
  * The server.
@@ -110,7 +110,7 @@ export class Server {
     router = express.Router();
 
     //IndexRoute
-    IndexRoute.create(router);
+    //IndexRoute.create(router);
 
     //TicketsRoute
     TicketsRoute.create(router);

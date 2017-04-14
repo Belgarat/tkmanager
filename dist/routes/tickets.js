@@ -13,6 +13,9 @@ class TicketsRoute extends route_1.BaseRoute {
         router.get("/api/v1/tickets/:ticket_id/trace", (req, res, next) => {
             new tickets_1.Tickets().getCurrentTrace(req.params.ticket_id, res, next);
         });
+        router.post("/api/v1/tickets/:ticket_id/trace", (req, res, next) => {
+            new tickets_1.Tickets().addTrace(req, res, next);
+        });
         router.get("/api/v1/tickets/:ticket_id/traces", (req, res, next) => {
             new tickets_1.Tickets().getCompleteTrace(req.params.ticket_id, res, next);
         });
@@ -29,8 +32,13 @@ class TicketsRoute extends route_1.BaseRoute {
             new tickets_1.Tickets().add(req, res, next);
         });
         router.put("/api/v1/tickets/:ticket_id", (req, res, next) => {
+            new tickets_1.Tickets().save(req, res, next);
         });
-        router.delete("/api/v1/tickets", (req, res, next) => {
+        router.delete("/api/v1/tickets/:ticket_id", (req, res, next) => {
+            new tickets_1.Tickets().delete(req, res, next);
+        });
+        router.put("/api/v1/tickets/:ticket_id/undelete", (req, res, next) => {
+            new tickets_1.Tickets().undelete(req, res, next);
         });
         console.log("[TicketsRoute::create] finished adding tickets api routes.");
         console.log("Base route: GET :8080/api/v1/tickets");
